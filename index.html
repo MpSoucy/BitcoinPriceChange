@@ -1,9 +1,9 @@
 <html>
-<head>
-  <title>Bitcon Gif</title>
-  <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
-</head>
-<style>
+  <head>
+    <title>Bitcon Gif</title>
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+  </head>
+  <style>
   .content {
     text-align: center;
     align-content: center;
@@ -22,35 +22,36 @@
   #BTCresults{
     font-size: 25px;
   }
-</style>
-<body>
-  <div class = "content">
-    <h2>Choose a timeframe to see the change in Bitcoin price:</h2>
-    <button type="submit" id="hour">1 hour</button>
-    <button type="submit" id="day">1 day</button>
-    <button type="submit" id="week">1 week</button>
-    <button type="submit" id="month">1 month</button><br/>
-    <div id="BTCresults"></div><br/>
-    <div id="gifHolder"></div><br/>
-    <div id="QRcode">
-    <img src="BitcoinQR.png" alt="QR code" style="width:25%"></img>
-    </div>
-<script>
-  $('button').click(function(e) {
-     e.preventDefault();
-     var timeframe = $(this).attr('id');
-     var chartUrl;
-     if(timeframe === "hour"){
+  </style>
+  <body>
+    <div class = "content">
+      <h2>Choose a timeframe to see the change in Bitcoin price:</h2>
+      <button type="submit" id="hour">1 hour</button>
+      <button type="submit" id="day">1 day</button>
+      <button type="submit" id="week">1 week</button>
+      <button type="submit" id="month">1 month</button><br/>
+      <div id="BTCresults"></div><br/>
+      <div id="gifHolder"></div><br/>
+      <div id="QRcode">
+        <img src="BitcoinQR.png" alt="QR code" style="width:25%"></img>
+      </div>
+  <script>
+    
+    $('button').click(function(e) {
+      e.preventDefault();
+      var timeframe = $(this).attr('id');
+      var chartUrl;
+      if(timeframe === "hour"){
        chartUrl = 'https://api.bitfinex.com/v2/candles/trade:1h:tBTCUSD/last';
-     }else if(timeframe === "day"){
+      }else if(timeframe === "day"){
        chartUrl = 'https://api.bitfinex.com/v2/candles/trade:1D:tBTCUSD/last';
-     }else if(timeframe === "week"){
+      }else if(timeframe === "week"){
        chartUrl = 'https://api.bitfinex.com/v2/candles/trade:7D:tBTCUSD/last';
-     }else{
+      }else{
        chartUrl = 'https://api.bitfinex.com/v2/candles/trade:1M:tBTCUSD/last';
-     }
-
-     $.getJSON(chartUrl, function(json){
+      }
+      
+      $.getJSON(chartUrl, function(json){
          var valChange = json[2] - json[1];
          var pcnt = (valChange/json[2] * 100).toFixed(2);
          var positive;
@@ -59,23 +60,23 @@
          }else{
            positive = "BTC is down ";
          }
-        document.getElementById("BTCresults").innerHTML = positive + pcnt + "% over the last " + timeframe + ".";
-        var gifUrl;
-        if(pcnt > 0){
+         document.getElementById("BTCresults").innerHTML = positive + pcnt + "% over the last " + timeframe + ".";
+         var gifUrl;
+         if(pcnt > 0){
           gifUrl = 'http://api.giphy.com/v1/gifs/search?q=money&api_key=gXWsjQ2AA6A2j29uvQZL75agqTBaDD0w';
-        }else{
+         }else{
           gifUrl = 'http://api.giphy.com/v1/gifs/search?q=crash&api_key=gXWsjQ2AA6A2j29uvQZL75agqTBaDD0w';
-        }
+         }
 
-        $.getJSON(gifUrl, function(json){
-         var i = Math.floor((Math.random() * 25)); ;
-            var urlSrc = json.data[i].images.original['url'];
-         var theGif = "<img src= '" + urlSrc + "'></img>"
-             document.getElementById("gifHolder").innerHTML = theGif;
+         $.getJSON(gifUrl, function(json){
+          var i = Math.floor((Math.random() * 25)); ;
+          var urlSrc = json.data[i].images.original['url'];
+          var theGif = "<img src= '" + urlSrc + "'></img>"
+          document.getElementById("gifHolder").innerHTML = theGif;
         });
      });
   });
-</script>
-</div>
-</body>
+  </script>
+  </div>
+  </body>
 </html>
