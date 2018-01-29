@@ -1,35 +1,81 @@
 <html>
-
 <head>
-  <title>Get Stock Quote</title>
-  <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css" integrity="sha384-nn4HPE8lTHyVtfCBi5yW9d20FjT8BJwUXyWZT9InLYax14RDjBj46LmSztkmNP9w" crossorigin="anonymous">
-  <script
-  src="https://code.jquery.com/jquery-3.3.1.js"
-  integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
-  crossorigin="anonymous"></script>
-  <style>
-    body {
-       margin-top: 100px;
-       margin-left: 100px;
-    }
-  </style>
+  <title>Bitcon Gif</title>
+  <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
 </head>
-
+<style>
+  .content {
+    text-align: center;
+    align-content: center;
+    margin: 0 auto;
+  }
+  button{
+    border-radius: 35%;
+    background-color: gold;
+    font-size: 20px;
+    width: 6em;
+    margin-bottom: 10px;
+  }
+  button:hover{
+    background-color: grey;
+  }
+  #BTCresults{
+    font-size: 25px;
+  }
+</style>
 <body>
-  <h3>Enter Stock Quote</h3>
-  <form class="pure-form">
-    <input type="text" class="pure-input-rounded" id="quote">
-    <button type="submit" class="pure-button" id="search">Search</button>
-  </form>
-
-  <script>
-  $('#search').click(function(e) {
+  <div class = "content">
+    <h2>Choose a timeframe to see the change in Bitcoin price:</h2>
+    <button type="submit" id="hour">1 hour</button>
+    <button type="submit" id="day">1 day</button>
+    <button type="submit" id="week">1 week</button>
+    <button type="submit" id="month">1 month</button><br/>
+    <div id="BTCresults"></div><br/>
+    <div id="gifHolder"></div><br/>
+    <div id="QRcode">
+    <img src="BitcoinQR.png" alt="QR code" style="width:25%"></img>
+    </div>
+<script>
+  $('button').click(function(e) {
      e.preventDefault();
-     var stock = $('#quote').val();
-     $.getJSON('https://api.iextrading.com/1.0/stock/' + stock + '/quote', function(json){
-        alert("Current price of " + stock + ": " + json['latestPrice']);
+     var timeframe = $(this).attr('id');
+     var chartUrl;
+     if(timeframe === "hour"){
+       chartUrl = 'https://api.bitfinex.com/v2/candles/trade:1h:tBTCUSD/last';
+     }else if(timeframe === "day"){
+       chartUrl = 'https://api.bitfinex.com/v2/candles/trade:1D:tBTCUSD/last';
+     }else if(timeframe === "week"){
+       chartUrl = 'https://api.bitfinex.com/v2/candles/trade:7D:tBTCUSD/last';
+     }else{
+       chartUrl = 'https://api.bitfinex.com/v2/candles/trade:1M:tBTCUSD/last';
+     }
+
+     $.getJSON(chartUrl, function(json){
+         var valChange = json[2] - json[1];
+         var pcnt = (valChange/json[2] * 100).toFixed(2);
+         var positive;
+         if(pcnt > 0){
+           positive = "BTC is up by ";
+         }else{
+           positive = "BTC is down by ";
+         }
+        document.getElementById("BTCresults").innerHTML = positive + pcnt + "% over the last " + timeframe + ".";
+        var gifUrl;
+        if(pcnt > 0){
+          gifUrl = 'http://api.giphy.com/v1/gifs/search?q=money&api_key=gXWsjQ2AA6A2j29uvQZL75agqTBaDD0w';
+        }else{
+          gifUrl = 'http://api.giphy.com/v1/gifs/search?q=crash&api_key=gXWsjQ2AA6A2j29uvQZL75agqTBaDD0w';
+        }
+
+        $.getJSON(gifUrl, function(json){
+         var i = Math.floor((Math.random() * 25)); ;
+            var urlSrc = json.data[i].images.original['url'];
+         var theGif = "<img src= '" + urlSrc + "'></img>"
+             document.getElementById("gifHolder").innerHTML = theGif;
+        });
      });
   });
-  </script>
+</script>
+</div>
 </body>
 </html>
