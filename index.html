@@ -55,9 +55,9 @@
          var pcnt = (valChange/json[2] * 100).toFixed(2);
          var positive;
          if(pcnt > 0){
-           positive = "BTC is up by ";
+           positive = "BTC is up ";
          }else{
-           positive = "BTC is down by ";
+           positive = "BTC is down ";
          }
         document.getElementById("BTCresults").innerHTML = positive + pcnt + "% over the last " + timeframe + ".";
         var gifUrl;
